@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Objects;
 
 public class Place {
     private String id;
@@ -84,5 +85,32 @@ public class Place {
 
     public void setPostCodes(List<String> postCodes) {
         this.postCodes = postCodes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return Double.compare(latitude, place.latitude) == 0 && Double.compare(longitude, place.longitude) == 0 && Objects.equals(id, place.id) && Objects.equals(name, place.name) && Objects.equals(type, place.type) && Objects.equals(townHall, place.townHall) && Objects.equals(phoneCode, place.phoneCode) && Objects.equals(postCodes, place.postCodes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, type, townHall, phoneCode, latitude, longitude, postCodes);
+    }
+
+    @Override
+    public String toString() {
+        return "Place{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", townHall='" + townHall + '\'' +
+                ", phoneCode='" + phoneCode + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", postCodes=" + postCodes +
+                '}';
     }
 }

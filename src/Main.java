@@ -5,10 +5,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        List<Municipality> municipalities = new ArrayList<>();
         RegionContainer regionContainer = new RegionContainer(new ArrayList<>());
 
         try(InputStream inputStream = Main.class.getResourceAsStream("file/transformed-places.json")) {
@@ -38,12 +38,31 @@ public class Main {
             e.printStackTrace();
         }
 
-        String postalCodeToFind = "074406";
-        Place toFound = regionContainer.getRegions().getFirst().findPlaceByPostalCode(postalCodeToFind);
-        if (toFound != null) {
-            System.out.println("Намерено населено място: " + toFound.getName());
-        } else {
-            System.out.println("Населено място с пощенски код " + postalCodeToFind + " не е намерено.");
+
+        if (!regionContainer.getRegions().isEmpty()) {
+            List<Municipality> municipalities = regionContainer.getRegions().getFirst().getMunicipalities();
+            PlaceService service = new PlaceService(municipalities);
+
+            Scanner scanner = new Scanner(System.in);
+
+            while (true) {
+                System.out.println("Въведи пощенски код за проверка или 'изход' за излизане от програмата:");
+                String postalCodeToFind = scanner.nextLine();
+                if (postalCodeToFind.equalsIgnoreCase("изход")) {
+                    System.out.println("Изход от програмата.");
+                    break;
+                }
+
+                List<Place> foundPlaces = service.findPlacesByPostalCode(postalCodeToFind);
+
+                if (!foundPlaces.isEmpty()) {
+                    for (Place place : foundPlaces) {
+                        System.out.println("Намерено населено място " + place.getName() + " с пощенски код " + postalCodeToFind);
+                    }
+                } else {
+                    System.out.println("Няма населено място с такъв пощенски код " + postalCodeToFind);
+                }
+            }
         }
     }
 }
